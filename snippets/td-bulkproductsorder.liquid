@@ -1,0 +1,222 @@
+<div id="tech-dignity-snippet-bulk-order"></div>
+
+<style>
+  h1.td-section-title {
+    font-size: 20px;
+    padding-top: 25px;
+}
+</style>
+{% comment %}
+   Below code for display variants products
+{% endcomment %}
+
+<script type="text/javascript">
+ 
+    var api_script = document.createElement("script")
+    api_script.type = "text/javascript";
+    api_script.src = "https://apps.techdignity.com/bulk-products-order/public/js/api.jquery.js";
+    $("head").append(api_script);
+
+    if (jQuery == undefined) {
+        $("head").append($("<script />", {
+            src: "//code.jquery.com/jquery-2.1.4.min.js"
+        }));
+    }
+
+    $("head").append('<style type="text/css">.td-product-data{height: 250px;overflow: scroll;padding-bottom: 30px;margin-bottom: 20px;overflow-x: scroll;width: auto;}#tech-dignity-snippet-bulk-order .td-qty-box .td-inc-dec-button{cursor: pointer;width: 30px;float: left;text-align: center;background: #000;color: #fff;font-size: 20px;vertical-align: middle;}#tech-dignity-snippet-bulk-order .td-qty-box .decree{background-position: 0 -29px;}#tech-dignity-snippet-bulk-order input.td-product-qty{padding: 0px;width: 40px;height:40px;margin-left: 5px;margin-right: 5px;text-align: center;margin-bottom: 0px;line-height: 0px;}#tech-dignity-snippet-bulk-order .td-qty-box{display: flex;} .td-price,.td-variant-contents{margin-right:20px;margin-left:20px}.td-product-data .td-product-box{display:inline-flex;width:100%;border-bottom:1px solid #000;margin-bottom:20px}.td-image-box{width:30%;}.td-variant-contents{width: 40%;}td-price,.td-quantity{width: 40%;margin-right: 12px;} </style>');
+
+    var pathname = window.location.pathname;
+  
+    var pHandle = pathname.split("/")[2];
+    var isProducts = pathname.split("/")[1];
+  	var parts = pathname.split("/");
+  	var last_part = parts[parts.length-1];
+    var CollectionProduct = pathname.split("/")[3];
+  	
+  	var output=""; 
+  	
+    if (isProducts == "products_preview" || isProducts == "products" || (isProducts == "collections" && CollectionProduct == "products") || isProducts == '/products_preview') { 
+    	
+      $(document).ready(function () {    	  
+        $.ajax({
+                url: "https://apps.techdignity.com/bulk-products-order/public/bulk_products_order",
+                data: {
+                    shopname: Shopify.shop
+                },
+                success: function (settings) {
+                  
+                        var obj = $.parseJSON(settings);
+                  
+                  		
+                  
+                        if(obj.shopsetting.enable_app == 1 && obj.shopsetting.display_productpage == 0){
+                          
+                          $(".selector-wrapper").hide();
+                          $(".product-form__controls-group").hide();
+                          
+                        var position = 1;
+                  	output += '<h1 class="td-section-title">' + obj.shopsetting.section_title + '</h1>';
+                    output += '<div class="td-product-data">';
+                   
+                    {% for variant in product.variants %}
+
+                      output += '<div class="td-product-box">';
+
+                          if(obj.shopsetting.show_hide_image == 1){
+                              output += '<div class="td-image-box">'
+                              output += '<a href="{{ variant.url }}" class="product-url" >'; 
+
+                              {% if variant.image.src  %}
+                                  output += '<img class="variant-image sd" src="{{ variant.image.src | img_url: "300x300" }}"/>';
+                              {% else %}
+                                  output += '<img class="no-image" src="{{product.image.src | img_url: "300x300"}}"/>'; 
+                              {% endif %}
+
+                              output += '</a>';
+                              output += '</div>';
+                          }
+
+                          if(obj.shopsetting.product_title_color != null){
+                              var pro_title_color = "color:#"+obj.shopsetting.product_title_color+";";
+                          }
+                          if(obj.shopsetting.product_title_font_size != null){
+                              var pro_title_font_size = "font-size:"+obj.shopsetting.product_title_font_size+"px;";
+                          }
+
+                          output += '<div class="td-variant-contents">';
+                          {% if variant.title %}
+                  output += '<p><a href="{{ variant.url }}"><span class="title" style="'+pro_title_color + pro_title_font_size+'">{{ product.title }} - {{ variant.title }}</span></a></p>';
+                          {% endif %}
+                          output += '</div>';
+
+                          if(obj.shopsetting.show_hide_qty == 1){
+
+                              if(obj.shopsetting.qyt_box_btn_color != null){
+                                  var qty_box_btn_color = "background:#"+obj.shopsetting.qyt_box_btn_color+";";
+                              }
+
+                              output += '<div class="td-quantity" ><span for="quanity"> Quantity: </span>';
+                              output += '<div class="td-qty-box"><div class="decree td-inc-dec-button" style="'+qty_box_btn_color+'">-</div> <input type="text" variant_id="{{variant.id}}" name="td_product_qty_{{variant.id}}" position="'+position+'" class="td-product-qty" value="0"><div class="td-inc-dec-button" style="'+qty_box_btn_color+'">+</div></div>';
+                              position ++;
+                              if(obj.shopsetting.show_hide_stock == 1){ 
+                                {% if variant.inventory_management == "shopify" and variant.inventory_policy != "continue" %}
+                                	output += '<p><span class="stock" stock_data="{{ variant.inventory_quantity }}" style="font-size:12px;">{{ variant.inventory_quantity }} in stock.</span></p>';
+                                {% else %}
+                                	output += '<p><span class="stock" style="font-size:12px;">In stock.</span></p>';
+                                
+                                {% endif %}
+
+                                
+                              }
+                              output += '</div>';
+                          }
+
+                          {% if variant.price %}
+                          output += '<div class="td-price"><span for="price" >Price:</span><p><span class="price">{{ variant.price | money_with_currency }}</span></p></div>';
+                          {% endif %}
+                      output += '</div>';
+
+                    {% endfor %}
+                  
+                  	output += '</div>';
+                  
+                  	
+                    // Bulk order list showing multiple times
+                    if($( "#tech-dignity-snippet-bulk-order:has(.td-product-data)").length == 0){
+                    	$("#tech-dignity-snippet-bulk-order").append(output);
+                    }
+                          
+                  	
+                        
+
+                    $(document).on('click', '#tech-dignity-snippet-bulk-order .td-qty-box .td-inc-dec-button', function () {
+                        var $button = $(this);
+                        var oldValue = $button.parent().find("input.td-product-qty").val();
+                        if ($button.text() == "+") {
+                            var newVal = parseFloat(oldValue) + 1;
+
+                        } else {
+                            // Don't allow decrementing below zero
+                            if (oldValue > 0) {
+                                var newVal = parseFloat(oldValue) - 1;
+                            } else {
+                                newVal = 0;
+                            }
+                        }
+                        //change input value same as available quantity
+                        var current_stock_value = $(this).parents('.td-quantity').find('.stock').attr('stock_data');
+
+                        if(current_stock_value != "undefined"){
+                          if(parseInt(newVal) > parseInt(current_stock_value)){
+                            alert(current_stock_value+' Quantity is available in stock.');
+                            newVal = current_stock_value;
+                          }   
+                        }
+                        $button.parent().find("input").val(newVal);
+                    });
+
+                          $.get("/products/" + last_part + ".json", function (currentproduct) {
+
+                            setTimeout(function(){ 
+                              var images = currentproduct.product.images;
+
+                              var i;
+
+                              $(".td-product-box a img.no-image").attr("src", images[0].src);
+
+                            },500);
+
+
+                          });
+                            
+                    
+                    //Add to cart click event
+                    $(document).on('click', 'form button[name="add"]', function (e) {
+                        $.ajaxSetup({
+                            async: false
+                        });
+                        var length = $("#tech-dignity-snippet-bulk-order .td-qty-box").length;
+                        var counter = 0;
+                        $("#tech-dignity-snippet-bulk-order .td-qty-box").each(function(){
+                            var qty = $(this).find("input").val();
+                            var variant_id = $(this).find("input").attr('variant_id');
+                            if(qty > 0){
+                                var response = $.post('/cart/add.js', {quantity: qty, id: variant_id});
+                            }
+                            counter++;
+                        }); 
+
+                        if(counter == length){
+                            window.location.href='https://'+window.location.hostname+'/cart';
+                        }
+                        e.preventDefault();  
+                    });
+                    
+                    //End-Add to cart click event
+                    
+                    //for change the quantity based on the available quantity
+                     $(document).on('keyup', '.td-product-qty', function () {
+                        var current_qty_box_value = $( this ).val();
+                        //console.log(current_qty_box_value);
+
+                        var current_stock_value = $(this).parents('.td-quantity').find('.stock').attr('stock_data');
+                        //console.log(current_stock_value);
+                        if(current_stock_value != "undefined"){
+                          if(parseInt(current_qty_box_value) > parseInt(current_stock_value)){
+                            alert(current_stock_value+' Quantity is available in stock.');
+                            $( this ).val(current_stock_value);
+                          }   
+                        }
+
+                    });
+                    //End for change the quantity based on the available quantity 
+                    //End of ajax 
+                 } 	
+                }
+        });
+        
+    }); 
+      
+}
+
+</script>

@@ -1,0 +1,5 @@
+.product--large:not(.product--no-media) .product__info-wrapper {
+    padding: 35px 0 0 0;
+    max-width: 100%;
+    width: calc(100% - var(--grid-desktop-horizontal-spacing) / 2);
+} 317
