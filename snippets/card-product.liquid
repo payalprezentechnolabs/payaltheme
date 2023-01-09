@@ -113,9 +113,9 @@
               >
                 {{ card_product.title | escape }}
               </a>
-             <b>{{ product.metafields['Sizename']['sizename'] }}</b>
-                {{ product.metafields['Size:']['size'] }} 
             </h3>
+  <b>{{ product.metafields['Sizename']['sizename'] }}</b>
+                {{ product.metafields['Size:']['size'] }} 
           </div>
           <div class="card__badge {{ settings.badge_position }}">
             {%- if card_product.available == false -%}
