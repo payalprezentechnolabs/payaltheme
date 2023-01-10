@@ -1540,7 +1540,7 @@
     ]
   },
   {
-    "name": "Add Time",
+    "name": "t:sections.main-page.name",
     "settings": [
       {
         "type": "text",
