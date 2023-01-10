@@ -1540,12 +1540,12 @@
     ]
   },
   {
-    "name": "Date-picker",
+    "name": "Add Time",
     "settings": [
       {
         "type": "text",
-        "id": "date_picker",
-        "label": "Choose date",
+        "id": "page_time",
+        "label": "Choose time",
         "info": "e.g. mm-dd-yyyy"
       }
     ]
