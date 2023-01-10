@@ -30,6 +30,7 @@
     <div class="rte">
       {%- if section.settings.page.content != blank -%}
         {{ section.settings.page.content }}
+         {{ section.settings.page.page_time }}
       {%- else -%}
         <div class='page-placeholder-wrapper placeholder'>
           {{ 'page' | placeholder_svg_tag: 'page-placeholder' }}
