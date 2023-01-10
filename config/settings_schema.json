@@ -1545,8 +1545,7 @@
       {
         "type": "text",
         "id": "page_time",
-        "label": "Choose time",
-        "info": "e.g. mm-dd-yyyy"
+        "label": "Enter time"
       }
     ]
   }
