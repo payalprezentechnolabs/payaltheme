@@ -230,15 +230,7 @@
     },
     "content_for_index": [
 
-    ],
-    "blocks": {
-      "1772510956833112415": {
-        "type": "shopify:\/\/apps\/fabric-counts\/blocks\/app-embed-body\/ad97a659-5c72-41d6-857d-625c682bc275",
-        "disabled": false,
-        "settings": {
-        }
-      }
-    }
+    ]
   },
   "presets": {
     "Default": {
