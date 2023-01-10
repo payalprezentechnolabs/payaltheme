@@ -1540,7 +1540,7 @@
     ]
   },
   {
-    "name": "t:sections.main-page.name",
+    "name": "Enter Time",
     "settings": [
       {
         "type": "text",
