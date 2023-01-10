@@ -23,6 +23,7 @@
     {{ page.title | escape }}
   </h1>
   <div class="rte">
+    {{ section.settings.date_picker | date: "%m-%d-%Y" }}
     {{ page.content }}
   </div>
 </div>
